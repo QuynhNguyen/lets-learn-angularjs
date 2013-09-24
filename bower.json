@@ -22,5 +22,6 @@
   ],
   "dependencies": {
     "angular": "v1.2.0-rc.2"
+    "bootstrap": "3.0.0"
   }
 }
