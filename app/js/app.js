@@ -5,28 +5,35 @@ var app = angular.module("LearnAngularApp", ['ngRoute', 'ngResource', 'ParseModu
 			.when('/', {templateUrl: 'partials/list.html', controller: ListCtrl})
 			.otherwise({redirectTo: '/'});
 	}).
-	run(function(ParseSDK){});
+	run(function(ParseSDK){
+		ParseSDK.initApiKey();
+	});
 
 
 //Factory
+app.factory('Todo', function(){
+	var Todo = Parse.Object.extend("todo");
+	var query = new Parse.Query(Todo);
+	return query;
+});
 
 //Module
 angular.module('ParseModule', []).
 	factory('ParseSDK', function () {
-		Parse.initialize("Nr3Wg2Otho1E2Kh3tGx4ZsfXTA3NE0c190fovGyx", "sgbPpmB2OnU45fNA35FTZzSh4EOuMJHeApFCHC4q");
+		return {
+			initApiKey: function() {
+				Parse.initialize("Nr3Wg2Otho1E2Kh3tGx4ZsfXTA3NE0c190fovGyx", "sgbPpmB2OnU45fNA35FTZzSh4EOuMJHeApFCHC4q");
+			}
+		}
 	});
 
 //Controller
-var ListCtrl = function($scope, $location) {
-	var Todo = Parse.Object.extend("todo");
-	var query = new Parse.Query(Todo);
-	query.find({
+var ListCtrl = function($scope, $location, Todo) {
+	Todo.find({
 		success: function(result) {
-			console.log(result);
 			$scope.$apply(function() {
 				$scope.items = result;
 			});
-			console.log($scope.items);
 		},
 		error: function(error) {
 			alert("ListCtrl error: " + error.message);
