@@ -1,3 +1,4 @@
+<div from="Quynh" greet="Audience"></div>
 <table class="table table-striped table-condensed table-hover">
     <thead>
         <th>Todo Id</th>
@@ -6,9 +7,9 @@
     </thead>
     <tbody>
         <tr ng-repeat="item in items">
-            <td>{{item.id}}</td>
-            <td>{{item.get('due') | date:'yy/MM/dd @ h:ma'}}</td>
-            <td>{{item.get('priority')}}</td>
+            <td>{{item.objectId}}</td>
+            <td>{{item.due.iso | date:'yy/MM/dd @ h:ma'}}</td>
+            <td>{{item.priority}}</td>
         </tr>
     </tbody>
 </table>

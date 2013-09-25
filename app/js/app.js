@@ -1,44 +1,39 @@
 //Main App
 var app = angular.module("LearnAngularApp", ['ngRoute', 'ngResource', 'ParseModule']).
-	config(function($routeProvider) {
+	config(function($routeProvider, $httpProvider) {
+
+		//Server Authentication
+		$httpProvider.defaults.headers.common['X-Parse-Application-Id'] = 'Nr3Wg2Otho1E2Kh3tGx4ZsfXTA3NE0c190fovGyx';
+		$httpProvider.defaults.headers.common['X-Parse-REST-API-Key'] = '4UFGOn9bDzrh3qQUMo7OStPUOmU6qjlNtIiQcPav';
+		
+		//Routing
 		$routeProvider
 			.when('/', {templateUrl: 'partials/list.html', controller: ListCtrl})
 			.otherwise({redirectTo: '/'});
-	}).
-	run(function(ParseSDK){
-		ParseSDK.initApiKey();
 	});
 
 
 //Factory
-app.factory('Todo', function(){
-	var Todo = Parse.Object.extend("todo");
-	var query = new Parse.Query(Todo);
-	return query;
+app.factory('Todo', function($resource, ParseSDK, $http){
+	return $resource(ParseSDK.getApiUrl() + '/classes/todo/:id', { id: '@id' }, { update: { method: 'PUT', isArray: false } });
 });
+
 
 //Module
 angular.module('ParseModule', []).
 	factory('ParseSDK', function () {
 		return {
-			initApiKey: function() {
-				Parse.initialize("Nr3Wg2Otho1E2Kh3tGx4ZsfXTA3NE0c190fovGyx", "sgbPpmB2OnU45fNA35FTZzSh4EOuMJHeApFCHC4q");
+			getApiUrl: function() {
+				return "https://api.parse.com/1";
 			}
 		}
 	});
 
 //Controller
 var ListCtrl = function($scope, $location, Todo) {
-	Todo.find({
-		success: function(result) {
-			$scope.$apply(function() {
-				$scope.items = result;
-			});
-		},
-		error: function(error) {
-			alert("ListCtrl error: " + error.message);
-		}
-	});
+	var todoList = Todo.get(function() {
+		$scope.items = todoList.results;
+	})
 }
 
 
