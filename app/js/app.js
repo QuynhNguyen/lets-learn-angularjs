@@ -2,7 +2,10 @@
 var app = angular.module("LearnAngularApp", ['ngRoute', 'ngResource', 'ParseModule']).
 	config(function($routeProvider, $httpProvider) {
 
-		//Server Authentication
+		/*
+		 * Please sign up at Parse.com to get your API and App Key
+		 * Feel free to use mine for learning purpose only! 
+		 */
 		$httpProvider.defaults.headers.common['X-Parse-Application-Id'] = 'Nr3Wg2Otho1E2Kh3tGx4ZsfXTA3NE0c190fovGyx';
 		$httpProvider.defaults.headers.common['X-Parse-REST-API-Key'] = '4UFGOn9bDzrh3qQUMo7OStPUOmU6qjlNtIiQcPav';
 		
@@ -29,11 +32,60 @@ angular.module('ParseModule', []).
 		}
 	});
 
+//Directive
+app.directive('sorted', [function () {
+	return {
+		scope: true,
+		restrict: 'A',
+		transclude: true,
+		template: '<a class="btn btn-link" ng-click="do_sort()" ng-transclude></a>' +
+            	  '<span ng-show="do_show(true)">' +
+                  '<i class="glyphicon glyphicon-arrow-down"></i>' +
+          		  '</span>' +
+         		  '<span ng-show="do_show(false)">' +
+                  '<i class="glyphicon glyphicon-arrow-up"></i>' +
+                  '</span> ',
+		controller: function ($scope, $element, $attrs) {
+			$scope.sort_by = $attrs.sorted;
+
+			$scope.do_sort = function() {
+				$scope.sort($scope.sort_by);
+			};
+
+			$scope.do_show = function(is_desc) {
+				return (is_desc != $scope.is_desc && $scope.sort_order == $scope.sort_by)
+			}
+		}
+	};
+}])
+
 //Controller
 var ListCtrl = function($scope, $location, Todo) {
-	var todoList = Todo.get(function() {
-		$scope.items = todoList.results;
-	})
+	$scope.sort_order = "priority";
+	$scope.is_desc = false;
+
+	$scope.sortString = function(is_desc) {
+		return is_desc ? "-" : "";
+	}
+
+	$scope.sort = function(col) {
+		if ($scope.sort_order === col) {
+			$scope.is_desc = !$scope.is_desc
+		} else {
+			$scope.is_desc = false;
+			$scope.sort_order = col;
+		}
+		$scope.search($scope.is_desc);
+	}
+
+	$scope.search = function(is_desc) {
+		var todoList = Todo.get({order: $scope.sortString(is_desc) + $scope.sort_order}, function() {
+			$scope.items = todoList.results;
+		})
+	}
+
+	$scope.search(false);
+
 }
 
 
