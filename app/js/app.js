@@ -6,8 +6,8 @@ var app = angular.module("LearnAngularApp", ['ngRoute', 'ngResource', 'ParseModu
 		 * Please sign up at Parse.com to get your API and App Key
 		 * Feel free to use mine for learning purpose only! 
 		 */
-		$httpProvider.defaults.headers.common['X-Parse-Application-Id'] = 'Nr3Wg2Otho1E2Kh3tGx4ZsfXTA3NE0c190fovGyx';
-		$httpProvider.defaults.headers.common['X-Parse-REST-API-Key'] = '4UFGOn9bDzrh3qQUMo7OStPUOmU6qjlNtIiQcPav';
+		$httpProvider.defaults.headers.common['X-Parse-Application-Id'] = '';
+		$httpProvider.defaults.headers.common['X-Parse-REST-API-Key'] = '';
 		
 		//Routing
 		$routeProvider
